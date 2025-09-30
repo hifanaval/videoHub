@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -6,8 +7,6 @@ import 'package:videohub/components/custom_text_field.dart';
 import 'package:videohub/constants/color_class.dart';
 import 'package:videohub/constants/textstyle_class.dart';
 import 'package:videohub/screens/login_screen/provider/auth_provider.dart';
-
-
 
 // Login Screen
 class LoginScreen extends StatelessWidget {
@@ -35,7 +34,9 @@ class LoginScreen extends StatelessWidget {
                     const SizedBox(height: 11),
                     Text(
                       'Lorem ipsum dolor sit amet consectetur. Porta at id hac vitae. Et tortor at vehicula euismod mi viverra.',
-                      style: TextStyleClass.bodyRegular(color: ColorClass.quaternaryColor),
+                      style: TextStyleClass.bodyRegular(
+                        color: ColorClass.quaternaryColor,
+                      ),
                     ),
                     const SizedBox(height: 36),
                     Row(
@@ -74,65 +75,67 @@ class LoginScreen extends StatelessWidget {
                     const Spacer(),
                     // Continue Button
                     Center(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.red.withOpacity(0.4),
-                              blurRadius: 20,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: ElevatedButton(
-                          onPressed: authProvider.isLoading ? null : () async {
-                            debugPrint('Login button pressed');
-                            // Validate form before proceeding
-                            if (authProvider.formKey.currentState!.validate()) {
-                              debugPrint('Form is valid, proceeding with login');
-                              await authProvider.verifyLogin(context);
-                            } else {
-                              debugPrint('Form validation failed');
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: authProvider.isLoading 
-                                ? Colors.grey.shade400 
-                                : Colors.red.shade600,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 50,
-                              vertical: 18,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            elevation: 0,
+                      child: InkWell(
+                        onTap:
+                            authProvider.isLoading
+                                ? null
+                                : () async {
+                                  debugPrint('Login button pressed');
+                                  // Validate form before proceeding
+                                  if (authProvider.formKey.currentState!
+                                      .validate()) {
+                                    debugPrint(
+                                      'Form is valid, proceeding with login',
+                                    );
+                                    await authProvider.verifyLogin(context);
+                                  } else {
+                                    debugPrint('Form validation failed');
+                                  }
+                                },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 2.5,
+                          margin: const EdgeInsets.symmetric(vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 14,
                           ),
-                          child: authProvider.isLoading
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'Continue',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(47),
+                            border: Border.all(
+                              color: ColorClass.primaryColor.withValues(
+                                alpha: 0.28,
+                              ),
+                            ),
+                          ),
+                          child:
+                              authProvider.isLoading
+                                  ? SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CupertinoActivityIndicator(
+                                      color: Colors.white,
+                                      radius: 10,
                                     ),
-                                    SizedBox(width: 8),
-                                    Icon(Icons.arrow_forward, size: 20),
-                                  ],
-                                ),
+                                  )
+                                  : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Continue',
+                                        style: TextStyleClass.buttonRegular(),
+                                      ),
+                                      SizedBox(width: 8),
+                                      CircleAvatar(
+                                        radius: 18,
+                                        backgroundColor: ColorClass.red,
+                                        child: Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          size: 20,
+                                          color: ColorClass.primaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                         ),
                       ),
                     ),
