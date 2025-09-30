@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:videohub/constants/color_class.dart';
+import 'package:videohub/constants/sized_box.dart';
 import 'package:videohub/constants/textstyle_class.dart';
 import 'package:videohub/screens/feed_post/widgets/category_chip.dart';
 import 'package:videohub/screens/home/model/category_model.dart';
@@ -78,7 +79,7 @@ class AllCategoriesBottomSheet extends StatelessWidget {
 
           // Done Button
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -94,6 +95,7 @@ class AllCategoriesBottomSheet extends StatelessWidget {
               ),
             ),
           ),
+          kHeight(20)
         ],
       ),
     );
