@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:videohub/constants/global_variables.dart';
 import 'package:videohub/constants/string_class.dart';
 import 'package:videohub/screens/home/home_screen.dart';
+import 'package:videohub/screens/login_screen/login_screen.dart';
 import 'package:videohub/screens/login_screen/model/login_response_model.dart';
 import 'package:videohub/utils/api_urls.dart';
 import 'package:videohub/utils/app_utils.dart';
@@ -194,6 +195,29 @@ String? validatePhoneNumber(String? value) {
       setPhoneError('Failed to process login response. Please try again.');
     } finally {
       setLoading(false);
+    }
+  }
+
+void handleLogout(BuildContext context) async {
+    try {
+      // Clear stored tokens
+      await SharedUtils.setString(StringClass.token, '');
+      await SharedUtils.setString('refresh_token', '');
+
+      // Clear global access token
+      accessToken = '';
+
+      debugPrint('User logged out successfully');
+
+      // Navigate to login screen
+      if (context.mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      debugPrint('Error during logout: $e');
     }
   }
 

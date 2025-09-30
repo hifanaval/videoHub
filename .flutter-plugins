@@ -1,4 +1,7 @@
 # This is a generated file; do not edit or check into version control.
+path_provider=/Users/hifa/.pub-cache/hosted/pub.dev/path_provider-2.1.5/
+path_provider_android=/Users/hifa/.pub-cache/hosted/pub.dev/path_provider_android-2.2.18/
+path_provider_foundation=/Users/hifa/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.2/
 path_provider_linux=/Users/hifa/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/
 path_provider_windows=/Users/hifa/.pub-cache/hosted/pub.dev/path_provider_windows-2.3.0/
 shared_preferences=/Users/hifa/.pub-cache/hosted/pub.dev/shared_preferences-2.5.3/
@@ -7,3 +10,10 @@ shared_preferences_foundation=/Users/hifa/.pub-cache/hosted/pub.dev/shared_prefe
 shared_preferences_linux=/Users/hifa/.pub-cache/hosted/pub.dev/shared_preferences_linux-2.4.1/
 shared_preferences_web=/Users/hifa/.pub-cache/hosted/pub.dev/shared_preferences_web-2.4.3/
 shared_preferences_windows=/Users/hifa/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.4.1/
+sqflite=/Users/hifa/.pub-cache/hosted/pub.dev/sqflite-2.4.2/
+sqflite_android=/Users/hifa/.pub-cache/hosted/pub.dev/sqflite_android-2.4.1/
+sqflite_darwin=/Users/hifa/.pub-cache/hosted/pub.dev/sqflite_darwin-2.4.2/
+video_player=/Users/hifa/.pub-cache/hosted/pub.dev/video_player-2.10.0/
+video_player_android=/Users/hifa/.pub-cache/hosted/pub.dev/video_player_android-2.8.14/
+video_player_avfoundation=/Users/hifa/.pub-cache/hosted/pub.dev/video_player_avfoundation-2.8.4/
+video_player_web=/Users/hifa/.pub-cache/hosted/pub.dev/video_player_web-2.4.0/

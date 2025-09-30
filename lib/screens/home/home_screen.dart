@@ -1,14 +1,38 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:videohub/components/video_player_widget.dart';
 import 'package:videohub/constants/color_class.dart';
-import 'package:videohub/constants/global_variables.dart';
 import 'package:videohub/constants/image_class.dart';
 import 'package:videohub/constants/textstyle_class.dart';
-import 'package:videohub/screens/login_screen/login_screen.dart';
-import 'package:videohub/utils/shared_utils.dart';
-import 'package:videohub/constants/string_class.dart';
+import 'package:videohub/screens/home/model/home_model.dart';
+import 'package:videohub/screens/home/provider/category_provider.dart';
+import 'package:videohub/screens/home/provider/home_provider.dart';
+import 'package:videohub/screens/home/shimmer/base_shimmer.dart';
+import 'package:videohub/screens/home/shimmer/category_list_shimer.dart';
+import 'package:videohub/screens/home/shimmer/video_feed_shimmer.dart';
+import 'package:videohub/screens/login_screen/provider/auth_provider.dart';
+import 'package:videohub/utils/app_utils.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int selectedCategoryIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Defer API calls until after the build is complete
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<CategoryProvider>(context, listen: false).fetchCategoryData(context);
+      Provider.of<HomeProvider>(context, listen: false).fetchHomeData(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +88,7 @@ class HomeScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.grey.shade300,
-                border: Border.all(color: Colors.red.shade600, width: 2),
+                border: Border.all(color: ColorClass.primaryColor, width: 2),
               ),
               child: ClipOval(
                 child: Image.asset(ImageClass.profileImage, fit: BoxFit.cover),
@@ -77,109 +101,108 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildCategoryBar() {
-    final categories = [
-      {'name': 'Explore', 'icon': Icons.explore, 'isSelected': true},
-      {'name': 'Trending', 'icon': Icons.trending_up, 'isSelected': false},
-      {'name': 'All Categories', 'icon': Icons.category, 'isSelected': false},
-      {'name': 'Photography', 'icon': Icons.camera_alt, 'isSelected': false},
-    ];
-
     return SizedBox(
       height: 50,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 18),
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          final isSelected = category['isSelected'] as bool;
-
-          return Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color:
-                    isSelected
-                        ? ColorClass.red.withValues(alpha: 0.4)
-                        : Colors.transparent,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(
-                  color:
-                      isSelected
-                          ? ColorClass.red.withValues(alpha: 0.2)
-                          : ColorClass.primaryColor.withValues(alpha: 0.4),
-                  width: 1,
+      child: Consumer<CategoryProvider>(
+        builder: (context, categoryProvider, child) {
+          // Show shimmer while loading
+          if (categoryProvider.isLoading) {
+            return CategoryListShimmer();
+          }
+          
+          // Show categories when loaded
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            itemCount: categoryProvider.categories.length,
+            itemBuilder: (context, index) {
+              final category = categoryProvider.categories[index];
+              final isSelected = selectedCategoryIndex == index;
+        
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedCategoryIndex = index;
+                  });
+                  debugPrint('Category selected: ${category.title}');
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color:
+                          isSelected
+                              ? ColorClass.red.withValues(alpha: 0.4)
+                              : Colors.transparent,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(
+                        color:
+                            isSelected
+                                ? ColorClass.red.withValues(alpha: 0.2)
+                                : ColorClass.primaryColor.withValues(alpha: 0.4),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                       Container(
+                                    width: 15,
+                                    height: 15,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(47),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(47),
+                                      child: CachedNetworkImage(
+                                        fit: BoxFit.cover,
+                                        imageUrl: category.image ?? '',
+                                      ),
+                                    ),
+                                  ),
+                        const SizedBox(width: 8),
+                        Text(
+                          category.title ?? '',
+                          style: TextStyleClass.buttonRegular(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    category['icon'] as IconData,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    category['name'] as String,
-                    style: TextStyleClass.buttonRegular(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
+              );
+            },
           );
-        },
+        }
       ),
     );
   }
 
-  Widget _buildVideoFeed() {
-    final videos = [
-      {
-        'creator': 'Anagha Krishna',
-        'time': '5 days ago',
-        'avatar':
-            'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
-        'thumbnail':
-            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=225&fit=crop',
-        'description':
-            'Lorem ipsum dolor sit amet consectetur. Leo ac lorem faucli bus facilisis tellus. At vitae dis commodo sollicitudin elementum suspendisse...',
-      },
-      {
-        'creator': 'Gokul Krishna',
-        'time': '5 days ago',
-        'avatar':
-            'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-        'thumbnail':
-            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=225&fit=crop',
-        'description':
-            'Lorem ipsum dolor sit amet consectetur. Leo ac lorem faucli bus facilisis tellus. At vitae dis commodo nunc sollicitudin elementum suspendisse... See More',
-      },
-      {
-        'creator': 'Michel Jhon',
-        'time': '5 days ago',
-        'avatar':
-            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-        'thumbnail':
-            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=225&fit=crop',
-        'description':
-            'Lorem ipsum dolor sit amet consectetur. Leo ac lorem faucli bus facilisis tellus. At vitae dis commodo sollicitudin elementum suspendisse...',
-      },
-    ];
 
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      // padding: const EdgeInsets.symmetric(horizontal: 20),
-      itemCount: videos.length,
-      itemBuilder: (context, index) {
-        final video = videos[index];
-        return _buildVideoCard(context, video);
-      },
+  Widget _buildVideoFeed() {
+    return Consumer<HomeProvider>(
+      builder: (context, homeProvider, child) {
+        // Show shimmer when loading
+        if (homeProvider.isLoading) {
+          return const VideoFeedShimmer();
+        }
+        
+        // Show actual content when loaded
+        return ListView.builder(
+          padding: EdgeInsets.zero,
+          shrinkWrap: true,
+          // padding: const EdgeInsets.symmetric(horizontal: 20),
+          itemCount: homeProvider.homeItems.length,
+          itemBuilder: (context, index) {
+            final video = homeProvider.homeItems[index];
+            return _buildVideoCard(context, video);
+          },
+        );
+      }
     );
   }
 
-  Widget _buildVideoCard(BuildContext context, Map<String, dynamic> video) {
+  Widget _buildVideoCard(BuildContext context, HomeItem video) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       child: Column(
@@ -197,7 +220,16 @@ class HomeScreen extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: Colors.grey.shade300,
                   ),
-                  child: Image.asset(ImageClass.profileImage),
+                  child: CachedNetworkImage(
+                    imageUrl: video.user?.image ?? '',
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => const BaseShimmer(
+                      width: 40,
+                      height: 40,
+                      borderRadius: 40,
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.person, size: 40, color: ColorClass.tertiaryColor),
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -205,11 +237,11 @@ class HomeScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        video['creator'],
+                        video.user?.name ?? '',
                         style: TextStyleClass.bodyMedium(),
                       ),
                       Text(
-                        video['time'],
+                       AppUtils.timeAgoFull(video.createdAt?.toString()),
                         style: TextStyleClass.caption(
                           color: ColorClass.quaternaryColor,
                         ),
@@ -222,42 +254,13 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Video Thumbnail
-          GestureDetector(
-            onTap: () {
-              debugPrint('Video tapped: ${video['creator']}');
-            },
-            child: Container(
-              height: MediaQuery.of(context).size.height / 2,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                // borderRadius: BorderRadius.circular(12),
-                color: Colors.grey.shade800,
-                image: DecorationImage(
-                  image: NetworkImage(video['thumbnail']),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Center(
-                child: Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: ColorClass.primaryColor.withValues(alpha: 0.25),
-                    border: Border.all(
-                      color: ColorClass.primaryColor,
-                      width: 2,
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.play_arrow_rounded,
-                    color: ColorClass.primaryColor,
-                    size: 26,
-                  ),
-                ),
-              ),
-            ),
+          // Video Player
+          VideoPlayerWidget(
+            videoUrl: video.video ?? '',
+            thumbnailUrl: video.image ?? '',
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height / 2,
+            fit: BoxFit.cover,
           ),
           const SizedBox(height: 12),
 
@@ -265,7 +268,7 @@ class HomeScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: Text(
-              video['description'],
+              video.description ?? '',
               style: TextStyleClass.bodyLight(color: ColorClass.secondaryColor),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
@@ -438,7 +441,14 @@ class HomeScreen extends StatelessWidget {
                     width: double.infinity,
                     margin: const EdgeInsets.only(bottom: 20),
                     child: ElevatedButton(
-                      onPressed: () => _handleLogout(context),
+                      onPressed:
+                          () => AppUtils.showLogoutConfirmation(
+                            context,
+                            () => Provider.of<AuthProvider>(
+                              context,
+                              listen: false,
+                            ).handleLogout(context),
+                          ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red.shade600,
                         foregroundColor: Colors.white,
@@ -495,27 +505,6 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
-  void _handleLogout(BuildContext context) async {
-    try {
-      // Clear stored tokens
-      await SharedUtils.setString(StringClass.token, '');
-      await SharedUtils.setString('refresh_token', '');
-
-      // Clear global access token
-      accessToken = '';
-
-      debugPrint('User logged out successfully');
-
-      // Navigate to login screen
-      if (context.mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-          (route) => false,
-        );
-      }
-    } catch (e) {
-      debugPrint('Error during logout: $e');
-    }
-  }
 }
+
+
