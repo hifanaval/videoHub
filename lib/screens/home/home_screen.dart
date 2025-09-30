@@ -30,7 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     // Defer API calls until after the build is complete
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<CategoryProvider>(context, listen: false).fetchCategoryData(context);
+      Provider.of<CategoryProvider>(
+        context,
+        listen: false,
+      ).fetchCategoryData(context);
       Provider.of<HomeProvider>(context, listen: false).fetchHomeData(context);
     });
   }
@@ -110,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (categoryProvider.isLoading) {
             return CategoryListShimmer();
           }
-          
+
           // Show categories when loaded
           return ListView.builder(
             scrollDirection: Axis.horizontal,
@@ -119,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               final category = categoryProvider.categories[index];
               final isSelected = selectedCategoryIndex == index;
-        
+
               return GestureDetector(
                 onTap: () {
                   setState(() {
@@ -130,7 +133,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 12),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color:
                           isSelected
@@ -141,14 +147,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         color:
                             isSelected
                                 ? ColorClass.red.withValues(alpha: 0.2)
-                                : ColorClass.primaryColor.withValues(alpha: 0.4),
+                                : ColorClass.primaryColor.withValues(
+                                  alpha: 0.4,
+                                ),
                         width: 1,
                       ),
                     ),
                     child: Center(
                       child: Text(
                         category.title ?? '',
-                        style: TextStyleClass.buttonRegular(color: Colors.white),
+                        style: TextStyleClass.buttonRegular(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
@@ -156,11 +166,10 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           );
-        }
+        },
       ),
     );
   }
-
 
   Widget _buildVideoFeed() {
     return Consumer<HomeProvider>(
@@ -169,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (homeProvider.isLoading) {
           return const VideoFeedShimmer();
         }
-        
+
         // Show actual content when loaded
         return ListView.builder(
           padding: EdgeInsets.zero,
@@ -180,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return _buildVideoCard(context, video);
           },
         );
-      }
+      },
     );
   }
 
@@ -205,12 +214,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: CachedNetworkImage(
                     imageUrl: video.user?.image ?? '',
                     fit: BoxFit.cover,
-                    placeholder: (context, url) => const BaseShimmer(
-                      width: 40,
-                      height: 40,
-                      borderRadius: 40,
-                    ),
-                    errorWidget: (context, url, error) => Icon(Icons.person, size: 40, color: ColorClass.tertiaryColor),
+                    placeholder:
+                        (context, url) => const BaseShimmer(
+                          width: 40,
+                          height: 40,
+                          borderRadius: 40,
+                        ),
+                    errorWidget:
+                        (context, url, error) => Icon(
+                          Icons.person,
+                          size: 40,
+                          color: ColorClass.tertiaryColor,
+                        ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -223,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyleClass.bodyMedium(),
                       ),
                       Text(
-                       AppUtils.timeAgoFull(video.createdAt?.toString()),
+                        AppUtils.timeAgoFull(video.createdAt?.toString()),
                         style: TextStyleClass.caption(
                           color: ColorClass.quaternaryColor,
                         ),
@@ -266,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return FloatingActionButton(
       shape: CircleBorder(),
       onPressed: () {
-       AppUtils.navigateTo(context, AddVideoScreen());
+        AppUtils.navigateTo(context, AddVideoScreen());
       },
       backgroundColor: ColorClass.red,
       child: const Icon(Icons.add, color: Colors.white, size: 28),
@@ -328,7 +343,10 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Profile', style: TextStyleClass.h2(color: Colors.white)),
+                  Text(
+                    'Profile',
+                    style: TextStyleClass.h2(color: Colors.white),
+                  ),
                   GestureDetector(
                     onTap: () => Navigator.of(context).pop(),
                     child: Container(
@@ -361,7 +379,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 100,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: ColorClass.red.withValues(alpha: 0.7), width: 3),
+                      border: Border.all(
+                        color: ColorClass.red.withValues(alpha: 0.7),
+                        width: 3,
+                      ),
                     ),
                     child: ClipOval(
                       child: Image.asset(
@@ -481,7 +502,11 @@ class _HomeScreenState extends State<HomeScreen> {
             color: ColorClass.red.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, color: ColorClass.red.withValues(alpha: 0.7), size: 20),
+          child: Icon(
+            icon,
+            color: ColorClass.red.withValues(alpha: 0.7),
+            size: 20,
+          ),
         ),
         title: Text(title, style: TextStyleClass.buttonRegular()),
         onTap: onTap,
@@ -491,5 +516,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
