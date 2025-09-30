@@ -107,11 +107,7 @@ class AppUtils {
           ),
           title: Row(
             children: [
-              Icon(
-                Icons.logout_rounded,
-                color: ColorClass.red,
-                size: 26,
-              ),
+              Icon(Icons.logout_rounded, color: ColorClass.red, size: 26),
               kWidth(12),
               Text(
                 'Logout',
@@ -130,7 +126,9 @@ class AppUtils {
               kHeight(8),
               Text(
                 'You will need to sign in again to access your account.',
-                style: TextStyleClass.bodyRegular(color: ColorClass.tertiaryColor),
+                style: TextStyleClass.bodyRegular(
+                  color: ColorClass.tertiaryColor,
+                ),
               ),
             ],
           ),
@@ -154,7 +152,9 @@ class AppUtils {
                     ),
                     child: Text(
                       'Cancel',
-                      style: TextStyleClass.h5(color: ColorClass.secondaryColor),
+                      style: TextStyleClass.h5(
+                        color: ColorClass.secondaryColor,
+                      ),
                     ),
                   ),
                 ),
@@ -189,47 +189,45 @@ class AppUtils {
     );
   }
 
-
   static String timeAgoFull(String? dateTime) {
-  if (dateTime == null || dateTime.isEmpty) return '';
+    if (dateTime == null || dateTime.isEmpty) return '';
 
-  try {
-    final date = DateTime.parse(dateTime);
-    final now = DateTime.now();
-    final diff = now.difference(date);
+    try {
+      final date = DateTime.parse(dateTime);
+      final now = DateTime.now();
+      final diff = now.difference(date);
 
-    if (diff.inSeconds < 60) return 'Just now';
-    
-    if (diff.inMinutes < 60) {
-      final m = diff.inMinutes;
-      return '$m ${m == 1 ? "minute" : "minutes"} ago';
+      if (diff.inSeconds < 60) return 'Just now';
+
+      if (diff.inMinutes < 60) {
+        final m = diff.inMinutes;
+        return '$m ${m == 1 ? "minute" : "minutes"} ago';
+      }
+
+      if (diff.inHours < 24) {
+        final h = diff.inHours;
+        return '$h ${h == 1 ? "hour" : "hours"} ago';
+      }
+
+      if (diff.inDays < 7) {
+        final d = diff.inDays;
+        return '$d ${d == 1 ? "day" : "days"} ago';
+      }
+
+      if (diff.inDays < 30) {
+        final w = (diff.inDays / 7).floor();
+        return '$w ${w == 1 ? "week" : "weeks"} ago';
+      }
+
+      if (diff.inDays < 365) {
+        final m = (diff.inDays / 30).floor();
+        return '$m ${m == 1 ? "month" : "months"} ago';
+      }
+
+      final y = (diff.inDays / 365).floor();
+      return '$y ${y == 1 ? "year" : "years"} ago';
+    } catch (e) {
+      return '';
     }
-    
-    if (diff.inHours < 24) {
-      final h = diff.inHours;
-      return '$h ${h == 1 ? "hour" : "hours"} ago';
-    }
-    
-    if (diff.inDays < 7) {
-      final d = diff.inDays;
-      return '$d ${d == 1 ? "day" : "days"} ago';
-    }
-    
-    if (diff.inDays < 30) {
-      final w = (diff.inDays / 7).floor();
-      return '$w ${w == 1 ? "week" : "weeks"} ago';
-    }
-    
-    if (diff.inDays < 365) {
-      final m = (diff.inDays / 30).floor();
-      return '$m ${m == 1 ? "month" : "months"} ago';
-    }
-    
-    final y = (diff.inDays / 365).floor();
-    return '$y ${y == 1 ? "year" : "years"} ago';
-  } catch (e) {
-    return '';
   }
-}
-
 }

@@ -43,7 +43,7 @@ class LoginScreen extends StatelessWidget {
                       children: [
                         // Country Code Dropdown
                         CountryDropdown(
-                          selectedCountryCode: authProvider.selectedCountryCode,
+                          selectedCountryCode: authProvider.currencyCode,
                           onChanged: (value) {
                             debugPrint('Country code changed to: $value');
                             authProvider.updateCountryCode(value);

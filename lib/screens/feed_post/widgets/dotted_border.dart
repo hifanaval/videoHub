@@ -1,4 +1,3 @@
-
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:videohub/constants/color_class.dart';
@@ -20,9 +19,9 @@ class DottedBorderContainer extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: DottedBorder(
-        color: ColorClass.primaryColor,
-        strokeWidth: 2,
-        dashPattern: const [8, 4],
+        color: ColorClass.secondaryColor,
+        strokeWidth: 1,
+        dashPattern: const [10, 10],
         borderType: BorderType.RRect,
         radius: const Radius.circular(12),
         child: Container(

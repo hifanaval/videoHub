@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:videohub/screens/home/shimmer/base_shimmer.dart';
+import 'package:videohub/components/base_shimmer.dart';
 
 class VideoFeedShimmer extends StatelessWidget {
-  const VideoFeedShimmer({
-    super.key,
-  });
+  const VideoFeedShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +28,7 @@ class VideoFeedShimmer extends StatelessWidget {
             child: Row(
               children: [
                 // Avatar shimmer
-                BaseShimmer(
-                  width: 40,
-                  height: 40,
-                  borderRadius: 40,
-                ),
+                BaseShimmer(width: 40, height: 40, borderRadius: 40),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -48,11 +42,7 @@ class VideoFeedShimmer extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       // Time shimmer
-                      BaseShimmer(
-                        width: 80,
-                        height: 12,
-                        borderRadius: 6,
-                      ),
+                      BaseShimmer(width: 80, height: 12, borderRadius: 6),
                     ],
                   ),
                 ),

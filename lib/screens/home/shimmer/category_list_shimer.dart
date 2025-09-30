@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:videohub/constants/color_class.dart';
-import 'package:videohub/screens/home/shimmer/base_shimmer.dart';
+import 'package:videohub/components/base_shimmer.dart';
 
 class CategoryListShimmer extends StatelessWidget {
   const CategoryListShimmer({

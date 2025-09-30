@@ -35,7 +35,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   void initState() {
     super.initState();
     _initializeVideo();
-    
+
     // Set initial visibility state - assume first video is visible
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -52,21 +52,21 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       if (widget.videoUrl.isEmpty) {
         return;
       }
-      
+
       _controller = VideoPlayerController.networkUrl(
         Uri.parse(widget.videoUrl),
       );
-      
+
       await _controller!.initialize();
-      
+
       if (mounted) {
         setState(() {
           _isInitialized = true;
         });
-        
+
         // Add listener to handle video state changes
         _controller!.addListener(_videoListener);
-        
+
         // Auto-play if this is the first video and it's visible
         // Add a small delay to ensure the widget is properly mounted
         Future.delayed(const Duration(milliseconds: 200), () {
@@ -115,13 +115,14 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
-    final isVisible = info.visibleFraction > 0.3; // Lower threshold for better responsiveness
-    
+    final isVisible =
+        info.visibleFraction > 0.3; // Lower threshold for better responsiveness
+
     if (isVisible != _isVisible) {
       setState(() {
         _isVisible = isVisible;
       });
-      
+
       if (isVisible && _isInitialized) {
         // Add a small delay to ensure smooth transition
         Future.delayed(const Duration(milliseconds: 50), () {
@@ -194,10 +195,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: ColorClass.primaryColor.withValues(alpha: 0.25),
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 2,
-                      ),
+                      border: Border.all(color: Colors.white, width: 2),
                     ),
                     child: Icon(
                       Icons.play_arrow_rounded,
@@ -217,7 +215,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                       shape: BoxShape.circle,
                       color: Colors.black.withValues(alpha: 0.6),
                     ),
-                    child:  CupertinoActivityIndicator(
+                    child: CupertinoActivityIndicator(
                       color: Colors.white,
                       radius: 14,
                     ),

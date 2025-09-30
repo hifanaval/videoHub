@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:videohub/constants/color_class.dart';
+import 'package:videohub/constants/textstyle_class.dart';
 import 'package:videohub/screens/feed_post/widgets/category_chip.dart';
 import 'package:videohub/screens/home/model/category_model.dart';
 import 'package:videohub/screens/home/provider/category_provider.dart';
@@ -8,16 +9,13 @@ import 'package:videohub/screens/home/provider/category_provider.dart';
 class AllCategoriesBottomSheet extends StatelessWidget {
   final List<Category> categories;
 
-  const AllCategoriesBottomSheet({
-    super.key,
-    required this.categories,
-  });
+  const AllCategoriesBottomSheet({super.key, required this.categories});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.black,
+        color: ColorClass.backgroundColor,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
@@ -40,14 +38,7 @@ class AllCategoriesBottomSheet extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'All Categories',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                Text('All Categories', style: TextStyleClass.h2()),
                 IconButton(
                   icon: const Icon(Icons.close, color: Colors.white),
                   onPressed: () => Navigator.pop(context),
@@ -65,14 +56,20 @@ class AllCategoriesBottomSheet extends StatelessWidget {
                   child: Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: categories.map((category) {
-                      final isSelected = categoryProvider.isSelected(category.id.toString());
-                      return CategoryChip(
-                        category: category,
-                        isSelected: isSelected,
-                        onTap: () => categoryProvider.toggleCategory(category.id.toString()),
-                      );
-                    }).toList(),
+                    children:
+                        categories.map((category) {
+                          final isSelected = categoryProvider.isSelected(
+                            category.id.toString(),
+                          );
+                          return CategoryChip(
+                            category: category,
+                            isSelected: isSelected,
+                            onTap:
+                                () => categoryProvider.toggleCategory(
+                                  category.id.toString(),
+                                ),
+                          );
+                        }).toList(),
                   ),
                 );
               },
@@ -93,14 +90,7 @@ class AllCategoriesBottomSheet extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  'Done',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                child: Text('Done', style: TextStyleClass.buttonRegular()),
               ),
             ),
           ),

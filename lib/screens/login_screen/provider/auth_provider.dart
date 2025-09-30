@@ -11,82 +11,77 @@ import 'package:videohub/utils/api_urls.dart';
 import 'package:videohub/utils/app_utils.dart';
 import 'package:videohub/utils/shared_utils.dart';
 
-
-
-
-
 class AuthProvider extends ChangeNotifier {
   bool isLoading = false;
   String currencyCode = '+91';
-  String selectedCountryCode = '+91';
   TextEditingController phoneNumber = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   String? phoneError;
-  
+
   // Model classes for login response
   LoginResponseModel? loginResponseModel;
 
-setLoading(bool value) {
-  isLoading = value;
-  notifyListeners();
-}
+  setLoading(bool value) {
+    isLoading = value;
+    notifyListeners();
+  }
 
-// Update country code selection
-void updateCountryCode(String countryCode) {
-  selectedCountryCode = countryCode;
-  currencyCode = countryCode.replaceAll('+', '');
-  clearPhoneError(); // Clear any existing errors when country code changes
-  notifyListeners();
-  debugPrint('Country code updated to: $countryCode, currency: $currencyCode');
-}
+  // Update country code selection
+  void updateCountryCode(String countryCode) {
+    currencyCode = countryCode.replaceAll('+', '');
+    clearPhoneError(); // Clear any existing errors when country code changes
+    notifyListeners();
+    debugPrint(
+      'Country code updated to: $countryCode, currency: $currencyCode',
+    );
+  }
 
-// Clear phone error
-void clearPhoneError() {
-  phoneError = null;
-  notifyListeners();
-}
+  // Clear phone error
+  void clearPhoneError() {
+    phoneError = null;
+    notifyListeners();
+  }
 
-// Set phone error
-void setPhoneError(String error) {
-  phoneError = error;
-  notifyListeners();
-}
+  // Set phone error
+  void setPhoneError(String error) {
+    phoneError = error;
+    notifyListeners();
+  }
 
-// Real-time validation as user types
-void validatePhoneNumberRealtime(String value) {
-  if (value.isEmpty) {
+  // Real-time validation as user types
+  void validatePhoneNumberRealtime(String value) {
+    if (value.isEmpty) {
+      clearPhoneError();
+      return;
+    }
+
+    // If the number is valid, clear any error
+    if (value.length == 10 && RegExp(r'^[0-9]+$').hasMatch(value)) {
+      clearPhoneError();
+    }
+  }
+
+  // Validate phone number
+  String? validatePhoneNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      setPhoneError('Please enter your phone number');
+      return 'Please enter your phone number';
+    }
+    if (value.length < 10) {
+      setPhoneError('Please enter a valid 10-digit phone number');
+      return 'Please enter a valid 10-digit phone number';
+    }
+    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+      setPhoneError('Phone number should contain only digits');
+      return 'Phone number should contain only digits';
+    }
+    // If validation passes, clear any existing error
     clearPhoneError();
-    return;
+    return null;
   }
-  
-  // If the number is valid, clear any error
-  if (value.length == 10 && RegExp(r'^[0-9]+$').hasMatch(value)) {
-    clearPhoneError();
-  }
-}
-
-// Validate phone number
-String? validatePhoneNumber(String? value) {
-  if (value == null || value.isEmpty) {
-    setPhoneError('Please enter your phone number');
-    return 'Please enter your phone number';
-  }
-  if (value.length < 10) {
-    setPhoneError('Please enter a valid 10-digit phone number');
-    return 'Please enter a valid 10-digit phone number';
-  }
-  if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-    setPhoneError('Phone number should contain only digits');
-    return 'Phone number should contain only digits';
-  }
-  // If validation passes, clear any existing error
-  clearPhoneError();
-  return null;
-}
-
 
   // Handle login
- Future<bool> verifyLogin(BuildContext context) async {
+  Future<bool> verifyLogin(BuildContext context) async {
     setLoading(true);
     notifyListeners();
     debugPrint('Entered verifyLogin function');
@@ -97,7 +92,9 @@ String? validatePhoneNumber(String? value) {
         "country_code": currencyCode,
         "phone": phoneNumber.text,
       });
-      debugPrint('Requesting login with params: country_code=$currencyCode, phone=${phoneNumber.text}');
+      debugPrint(
+        'Requesting login with params: country_code=$currencyCode, phone=${phoneNumber.text}',
+      );
 
       // Create dio instance
       final dio = Dio();
@@ -122,8 +119,9 @@ String? validatePhoneNumber(String? value) {
         if (response.data["status"] == true) {
           debugPrint('Login successful, processing response...');
           afterLoginMethod(
-              jsonEncode(response.data), // Convert Map to JSON string
-              context);
+            jsonEncode(response.data), // Convert Map to JSON string
+            context,
+          );
           return true;
         } else {
           setLoading(false);
@@ -151,33 +149,40 @@ String? validatePhoneNumber(String? value) {
     debugPrint('-----------------------Login Response: ${value.toString()}');
     try {
       loginResponseModel = loginResponseModelFromJson(value);
-      
+
       if (loginResponseModel!.status == true) {
         debugPrint('Login successful, saving tokens...');
-        
+
         // Save access token
         final receivedAccessToken = loginResponseModel!.token?.access ?? "";
         final refreshToken = loginResponseModel!.token?.refresh ?? "";
-        
+
         if (receivedAccessToken.isNotEmpty) {
           await SharedUtils.setString(StringClass.token, receivedAccessToken);
           await SharedUtils.setString("refresh_token", refreshToken);
-          
+
           // Set global access token
           accessToken = receivedAccessToken;
-          
+
           debugPrint('Access token saved: ${accessToken.substring(0, 20)}...');
-          debugPrint('Refresh token saved: ${refreshToken.substring(0, 20)}...');
-          
+          debugPrint(
+            'Refresh token saved: ${refreshToken.substring(0, 20)}...',
+          );
+
           // Navigate to home screen after successful login
           await Future.delayed(const Duration(seconds: 1), () {
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
               Navigator.pushReplacement(
-                context, 
-                MaterialPageRoute(builder: (context) => HomeScreen())
+                context,
+                MaterialPageRoute(builder: (context) => HomeScreen()),
               );
               Future.microtask(() {
-                AppUtils.showToast(context, 'Welcome', 'Login successful!', true);
+                AppUtils.showToast(
+                  context,
+                  'Welcome',
+                  'Login successful!',
+                  true,
+                );
               });
             });
           });
@@ -191,14 +196,16 @@ String? validatePhoneNumber(String? value) {
       }
     } catch (e) {
       setLoading(false);
-      debugPrint('-----------------------Login processing error: ${e.toString()}');
+      debugPrint(
+        '-----------------------Login processing error: ${e.toString()}',
+      );
       setPhoneError('Failed to process login response. Please try again.');
     } finally {
       setLoading(false);
     }
   }
 
-void handleLogout(BuildContext context) async {
+  void handleLogout(BuildContext context) async {
     try {
       // Clear stored tokens
       await SharedUtils.setString(StringClass.token, '');
@@ -220,5 +227,4 @@ void handleLogout(BuildContext context) async {
       debugPrint('Error during logout: $e');
     }
   }
-
 }

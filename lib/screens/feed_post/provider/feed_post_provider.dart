@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -14,75 +16,63 @@ class FeedPostProvider extends ChangeNotifier {
   bool _isVideoSelected = false;
   File? _selectedThumbnail;
   bool _isThumbnailSelected = false;
-  String _description = '';
   bool _isPosting = false;
+  final TextEditingController _descriptionController = TextEditingController();
 
   // Getters
   File? get selectedVideo => _selectedVideo;
   bool get isVideoSelected => _isVideoSelected;
   File? get selectedThumbnail => _selectedThumbnail;
   bool get isThumbnailSelected => _isThumbnailSelected;
-  String get description => _description;
   bool get isPosting => _isPosting;
+  TextEditingController get descriptionController => _descriptionController;
 
   // Set video file
   void setVideoFile(File? videoFile) {
-    debugPrint('🎥 Setting video file: ${videoFile?.path ?? 'null'}');
     _selectedVideo = videoFile;
     _isVideoSelected = videoFile != null;
     notifyListeners();
-    debugPrint('🎥 Video state updated - isSelected: $_isVideoSelected');
   }
 
   // Set thumbnail file
   void setThumbnailFile(File? thumbnailFile) {
-    debugPrint('🖼️ Setting thumbnail file: ${thumbnailFile?.path ?? 'null'}');
     _selectedThumbnail = thumbnailFile;
     _isThumbnailSelected = thumbnailFile != null;
     notifyListeners();
-    debugPrint('🖼️ Thumbnail state updated - isSelected: $_isThumbnailSelected');
   }
 
   // Clear video
   void clearVideo() {
-    debugPrint('🗑️ Clearing video file');
     _selectedVideo = null;
     _isVideoSelected = false;
     notifyListeners();
-    debugPrint('🗑️ Video cleared successfully');
   }
 
   // Clear thumbnail
   void clearThumbnail() {
-    debugPrint('🗑️ Clearing thumbnail file');
     _selectedThumbnail = null;
     _isThumbnailSelected = false;
     notifyListeners();
-    debugPrint('🗑️ Thumbnail cleared successfully');
   }
 
   // Set description
   void setDescription(String description) {
-    debugPrint('📝 Setting description: $description');
-    _description = description;
+    _descriptionController.text = description;
     notifyListeners();
   }
 
 
   // Set posting state
   void setPosting(bool isPosting) {
-    debugPrint('📤 Setting posting state: $isPosting');
     _isPosting = isPosting;
     notifyListeners();
   }
 
   // Post feed data
   Future<void> postFeed(BuildContext context) async {
-    debugPrint('📤 Starting feed post process');
     setPosting(true);
     
     try {
-      // Get category provider
       final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
       
       // Validate required fields
@@ -91,7 +81,7 @@ class FeedPostProvider extends ChangeNotifier {
         return;
       }
       
-      if (_description.trim().isEmpty) {
+      if (_descriptionController.text.trim().isEmpty) {
         AppUtils.showToast(context, 'Error', 'Please enter a description', false);
         return;
       }
@@ -128,7 +118,7 @@ class FeedPostProvider extends ChangeNotifier {
       
       // Create FormData for multipart upload
       FormData formData = FormData.fromMap({
-        "desc": _description,
+        "desc": _descriptionController.text.trim(),
         "category": categoryProvider.selectedCategoryIds,
       });
 
@@ -158,8 +148,7 @@ class FeedPostProvider extends ChangeNotifier {
         debugPrint('📤 Added image file: $imageFileName');
       }
 
-      debugPrint('📤 Sending feed post request');
-      debugPrint('📤 Description: $_description');
+      debugPrint('📤 Description: ${_descriptionController.text.trim()}');
       debugPrint('📤 Categories: ${categoryProvider.selectedCategoryIds}');
       debugPrint('📤 Has video: ${_selectedVideo != null}');
       debugPrint('📤 Has thumbnail: ${_selectedThumbnail != null}');
@@ -168,12 +157,11 @@ class FeedPostProvider extends ChangeNotifier {
 
       // Make API call
       final response = await Dio().post(
-        ApiUrls.postFeedData(), // You'll need to add this URL to your ApiUrls
+        ApiUrls.postFeedData(), 
         data: formData,
         options: Options(
           headers: {
             "Content-Type": "multipart/form-data",
-            // Add authorization header if needed
             "Authorization": "Bearer $accessToken",
           },
         ),
@@ -216,7 +204,7 @@ class FeedPostProvider extends ChangeNotifier {
     debugPrint('🔄 Resetting feed post provider');
     clearVideo();
     clearThumbnail();
-    _description = '';
+    _descriptionController.clear();
     setPosting(false);
     
     // Clear categories from CategoryProvider
@@ -224,5 +212,12 @@ class FeedPostProvider extends ChangeNotifier {
     categoryProvider.clearCategories();
     
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    debugPrint('🧹 Disposing feed post provider resources');
+    _descriptionController.dispose();
+    super.dispose();
   }
 }

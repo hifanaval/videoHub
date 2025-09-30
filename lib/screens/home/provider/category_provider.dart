@@ -8,7 +8,6 @@ class CategoryProvider extends ChangeNotifier {
   bool isInitial = true;
   CategoryListModel? categoryListModel;
   List<Category> categories = [];
-
   List<String> selectedCategoryIds = [];
   
 

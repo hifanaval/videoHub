@@ -9,7 +9,7 @@ import 'package:videohub/screens/feed_post/feed_post_screen.dart';
 import 'package:videohub/screens/home/model/home_model.dart';
 import 'package:videohub/screens/home/provider/category_provider.dart';
 import 'package:videohub/screens/home/provider/home_provider.dart';
-import 'package:videohub/screens/home/shimmer/base_shimmer.dart';
+import 'package:videohub/components/base_shimmer.dart';
 import 'package:videohub/screens/home/shimmer/category_list_shimer.dart';
 import 'package:videohub/screens/home/shimmer/video_feed_shimmer.dart';
 import 'package:videohub/screens/login_screen/provider/auth_provider.dart';
@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          GestureDetector(
+          InkWell(
             onTap: () {
               debugPrint('Profile image tapped');
               _showProfileDrawer(context);
@@ -174,7 +174,6 @@ class _HomeScreenState extends State<HomeScreen> {
         return ListView.builder(
           padding: EdgeInsets.zero,
           shrinkWrap: true,
-          // padding: const EdgeInsets.symmetric(horizontal: 20),
           itemCount: homeProvider.homeItems.length,
           itemBuilder: (context, index) {
             final video = homeProvider.homeItems[index];
@@ -319,31 +318,34 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.red.shade600,
+              color: ColorClass.red.withValues(alpha: 0.7),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Profile', style: TextStyleClass.h2(color: Colors.white)),
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 20,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Profile', style: TextStyleClass.h2(color: Colors.white)),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 
@@ -359,7 +361,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 100,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.red.shade600, width: 3),
+                      border: Border.all(color: ColorClass.red.withValues(alpha: 0.7), width: 3),
                     ),
                     child: ClipOval(
                       child: Image.asset(
@@ -433,7 +435,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ).handleLogout(context),
                           ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red.shade600,
+                        backgroundColor: ColorClass.red.withValues(alpha: 0.7),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
@@ -476,15 +478,15 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.red.shade600.withOpacity(0.1),
+            color: ColorClass.red.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, color: Colors.red.shade600, size: 20),
+          child: Icon(icon, color: ColorClass.red.withValues(alpha: 0.7), size: 20),
         ),
         title: Text(title, style: TextStyleClass.buttonRegular()),
         onTap: onTap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        hoverColor: Colors.red.shade600.withOpacity(0.1),
+        hoverColor: ColorClass.red.withValues(alpha: 0.1),
       ),
     );
   }

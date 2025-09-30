@@ -44,7 +44,8 @@ class CustomTextField extends StatelessWidget {
     this.contentPadding,
     this.textStyle,
     this.hintStyle,
-    this.errorText, this.maxLines,
+    this.errorText,
+    this.maxLines,
   });
 
   @override
@@ -57,49 +58,49 @@ class CustomTextField extends StatelessWidget {
             // color: backgroundColor ?? Colors.grey.shade900,
             borderRadius: BorderRadius.circular(borderRadius),
             border: Border.all(
-              color: errorText != null 
-                  ? Colors.red.withOpacity(0.8)
-                  : ColorClass.primaryColor.withValues(alpha: 0.4),
+              color:
+                  errorText != null
+                      ? Colors.red.withOpacity(0.8)
+                      : ColorClass.primaryColor.withValues(alpha: 0.4),
               width: 1,
             ),
           ),
           child: TextFormField(
-                  controller: controller,
-                  style: TextStyleClass.buttonRegular(),
-                  keyboardType: keyboardType,
-                  maxLines: maxLines ?? 1,
-                  inputFormatters: inputFormatters,
-                  maxLength: maxLength,
-                  obscureText: obscureText,
-                  readOnly: readOnly,
-                  onChanged: onChanged,
-                  onTap: onTap,
-                  validator: (value) {
-                    // Call the validator but don't show the result inside the field
-                    validator!(value);
-                    return null; // Always return null to hide internal error text
-                  },
-                  decoration: InputDecoration(
-                    hintText: hintText,
-                    contentPadding:
-                        contentPadding ??
-                        const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
-                    hintStyle: TextStyleClass.hintText(),
-                    border: InputBorder.none,
-                    isDense: true,
-                    prefixIcon: prefixIcon,
-                    suffixIcon: suffixIcon,
-                    counterText: '', // Hide character counter
-                    errorStyle: const TextStyle(
-                      height: 0,
-                      fontSize: 0,
-                      color: Colors.transparent,
-                    ), // Completely hide default error text
-                    errorBorder: InputBorder.none,
-                    focusedErrorBorder: InputBorder.none,
-                  ),
-                )
-            
+            controller: controller,
+            style: TextStyleClass.buttonRegular(),
+            keyboardType: keyboardType,
+            maxLines: maxLines ?? 1,
+            inputFormatters: inputFormatters,
+            maxLength: maxLength,
+            obscureText: obscureText,
+            readOnly: readOnly,
+            onChanged: onChanged,
+            onTap: onTap,
+            validator: (value) {
+              // Call the validator but don't show the result inside the field
+              validator!(value);
+              return null; // Always return null to hide internal error text
+            },
+            decoration: InputDecoration(
+              hintText: hintText,
+              contentPadding:
+                  contentPadding ??
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
+              hintStyle: TextStyleClass.hintText(),
+              border: InputBorder.none,
+              isDense: true,
+              prefixIcon: prefixIcon,
+              suffixIcon: suffixIcon,
+              counterText: '', // Hide character counter
+              errorStyle: const TextStyle(
+                height: 0,
+                fontSize: 0,
+                color: Colors.transparent,
+              ), // Completely hide default error text
+              errorBorder: InputBorder.none,
+              focusedErrorBorder: InputBorder.none,
+            ),
+          ),
         ),
         if (errorText != null) ...[
           const SizedBox(height: 6),

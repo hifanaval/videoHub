@@ -34,7 +34,8 @@ class CountryDropdown extends StatelessWidget {
       children: [
         Container(
           padding:
-              padding ?? const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+              padding ??
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
           decoration: BoxDecoration(
             // color: backgroundColor ?? Colors.grey.shade900,
             borderRadius: BorderRadius.circular(borderRadius),
@@ -61,7 +62,9 @@ class CountryDropdown extends StatelessWidget {
                   }).toList(),
               onChanged: (value) {
                 if (value != null) {
-                  debugPrint('CountryDropdown: Country code changed to: $value');
+                  debugPrint(
+                    'CountryDropdown: Country code changed to: $value',
+                  );
                   onChanged(value);
                 }
               },
@@ -72,7 +75,10 @@ class CountryDropdown extends StatelessWidget {
           const SizedBox(height: 6),
           Padding(
             padding: const EdgeInsets.only(left: 14),
-            child: Text('', style: const TextStyle(color: Colors.red, fontSize: 12, fontWeight: FontWeight.w400, height: 1.2),),
+            child: Text(
+              '',
+              style: TextStyleClass.bodyRegular(color: ColorClass.red),
+            ),
           ),
         ],
       ],
