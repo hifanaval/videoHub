@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:videohub/constants/color_class.dart';
+import 'package:videohub/constants/global_variables.dart';
+import 'package:videohub/constants/string_class.dart';
 import 'package:videohub/constants/textstyle_class.dart';
+import 'package:videohub/screens/home/home_screen.dart';
 import 'package:videohub/screens/login_screen/login_screen.dart';
+import 'package:videohub/utils/shared_utils.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -38,18 +41,59 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    // Navigate to login after 3 seconds
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          pageBuilder:
-              (context, animation, secondaryAnimation) => const LoginScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        ),
-      );
-    });
+    // Check for stored token and navigate accordingly
+    _checkAuthAndNavigate();
+  }
+
+  Future<void> _checkAuthAndNavigate() async {
+    try {
+      // Wait for splash animation to complete
+      await Future.delayed(const Duration(seconds: 2));
+      
+      // Check if access token exists in SharedPreferences
+      final storedToken = await SharedUtils.getString(StringClass.token);
+      debugPrint('Stored token check: ${storedToken?.isNotEmpty ?? false}');
+      
+      if (mounted) {
+        if (storedToken != null && storedToken.isNotEmpty) {
+          // Token exists, navigate to home screen
+          debugPrint('Access token found, navigating to home screen');
+          accessToken = storedToken; // Update global variable
+          Navigator.of(context).pushReplacement(
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => const HomeScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+            ),
+          );
+        } else {
+          // No token, navigate to login screen
+          debugPrint('No access token found, navigating to login screen');
+          Navigator.of(context).pushReplacement(
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => const LoginScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Error checking auth status: $e');
+      // On error, navigate to login screen
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => const LoginScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+          ),
+        );
+      }
+    }
   }
 
   @override

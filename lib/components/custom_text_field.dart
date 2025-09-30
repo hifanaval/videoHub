@@ -22,6 +22,7 @@ class CustomTextField extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final TextStyle? textStyle;
   final TextStyle? hintStyle;
+  final String? errorText;
 
   const CustomTextField({
     super.key,
@@ -43,44 +44,78 @@ class CustomTextField extends StatelessWidget {
     this.contentPadding,
     this.textStyle,
     this.hintStyle,
+    this.errorText,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        // color: backgroundColor ?? Colors.grey.shade900,
-        borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(
-          color: ColorClass.primaryColor.withValues(alpha: 0.4),
-          width: 1,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            // color: backgroundColor ?? Colors.grey.shade900,
+            borderRadius: BorderRadius.circular(borderRadius),
+            border: Border.all(
+              color: errorText != null 
+                  ? Colors.red.withOpacity(0.8)
+                  : ColorClass.primaryColor.withValues(alpha: 0.4),
+              width: 1,
+            ),
+          ),
+          child: TextFormField(
+                  controller: controller,
+                  style: TextStyleClass.buttonRegular(),
+                  keyboardType: keyboardType,
+                  inputFormatters: inputFormatters,
+                  maxLength: maxLength,
+                  obscureText: obscureText,
+                  readOnly: readOnly,
+                  onChanged: onChanged,
+                  onTap: onTap,
+                  validator: (value) {
+                    // Call the validator but don't show the result inside the field
+                    validator!(value);
+                    return null; // Always return null to hide internal error text
+                  },
+                  decoration: InputDecoration(
+                    hintText: hintText,
+                    contentPadding:
+                        contentPadding ??
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
+                    hintStyle: TextStyleClass.hintText(),
+                    border: InputBorder.none,
+                    isDense: true,
+                    prefixIcon: prefixIcon,
+                    suffixIcon: suffixIcon,
+                    counterText: '', // Hide character counter
+                    errorStyle: const TextStyle(
+                      height: 0,
+                      fontSize: 0,
+                      color: Colors.transparent,
+                    ), // Completely hide default error text
+                    errorBorder: InputBorder.none,
+                    focusedErrorBorder: InputBorder.none,
+                  ),
+                )
+            
         ),
-      ),
-      child: TextField(
-        controller: controller,
-        style: TextStyleClass.buttonRegular(),
-        keyboardType: keyboardType,
-        inputFormatters: inputFormatters,
-        maxLength: maxLength,
-        obscureText: obscureText,
-        // readOnly: readOnly,
-        onChanged: onChanged,
-        onTap: onTap,
-        decoration: InputDecoration(
-          hintText: hintText,
-          contentPadding:
-              contentPadding ??
-              const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
-
-          hintStyle: TextStyleClass.hintText(),
-          border: InputBorder.none,
-          isDense: true,
-          // isCollapsed: true,
-          prefixIcon: prefixIcon,
-          suffixIcon: suffixIcon,
-          counterText: '', // Hide character counter
-        ),
-      ),
+        if (errorText != null) ...[
+          const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsets.only(left: 14),
+            child: Text(
+              errorText!,
+              style: const TextStyle(
+                color: Colors.red,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                height: 1.2,
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
