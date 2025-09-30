@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:provider/provider.dart';
+import 'package:videohub/screens/feed_post/provider/feed_post_provider.dart';
 import 'package:videohub/screens/home/provider/category_provider.dart';
 import 'package:videohub/screens/home/provider/home_provider.dart';
 import 'package:videohub/screens/login_screen/provider/auth_provider.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => CategoryProvider()),
         ChangeNotifierProvider(create: (context) => HomeProvider()),
+        ChangeNotifierProvider(create: (context) => FeedPostProvider()),
       ],
       child: MaterialApp(
         title: 'VideoHub',

@@ -5,6 +5,7 @@ import 'package:videohub/components/video_player_widget.dart';
 import 'package:videohub/constants/color_class.dart';
 import 'package:videohub/constants/image_class.dart';
 import 'package:videohub/constants/textstyle_class.dart';
+import 'package:videohub/screens/feed_post/feed_post_screen.dart';
 import 'package:videohub/screens/home/model/home_model.dart';
 import 'package:videohub/screens/home/provider/category_provider.dart';
 import 'package:videohub/screens/home/provider/home_provider.dart';
@@ -144,29 +145,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 1,
                       ),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                       Container(
-                                    width: 15,
-                                    height: 15,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(47),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(47),
-                                      child: CachedNetworkImage(
-                                        fit: BoxFit.cover,
-                                        imageUrl: category.image ?? '',
-                                      ),
-                                    ),
-                                  ),
-                        const SizedBox(width: 8),
-                        Text(
-                          category.title ?? '',
-                          style: TextStyleClass.buttonRegular(color: Colors.white),
-                        ),
-                      ],
+                    child: Center(
+                      child: Text(
+                        category.title ?? '',
+                        style: TextStyleClass.buttonRegular(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
@@ -284,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return FloatingActionButton(
       shape: CircleBorder(),
       onPressed: () {
-        debugPrint('Create video button pressed');
+       AppUtils.navigateTo(context, AddVideoScreen());
       },
       backgroundColor: ColorClass.red,
       child: const Icon(Icons.add, color: Colors.white, size: 28),

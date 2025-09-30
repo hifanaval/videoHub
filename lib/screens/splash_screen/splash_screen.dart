@@ -58,6 +58,7 @@ class _SplashScreenState extends State<SplashScreen>
         if (storedToken != null && storedToken.isNotEmpty) {
           // Token exists, navigate to home screen
           debugPrint('Access token found, navigating to home screen');
+          debugPrint('Access token: $storedToken');
           accessToken = storedToken; // Update global variable
           Navigator.of(context).pushReplacement(
             PageRouteBuilder(

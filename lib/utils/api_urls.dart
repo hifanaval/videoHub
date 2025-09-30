@@ -13,4 +13,8 @@ static String baseUrl = 'https://frijo.noviindus.in/api/';
   static String getCategoryData() {
     return '${baseUrl}category_list';
   }
+
+  static String postFeedData() {
+    return '${baseUrl}my_feed';
+  }
 }

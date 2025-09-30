@@ -23,7 +23,7 @@ class CustomTextField extends StatelessWidget {
   final TextStyle? textStyle;
   final TextStyle? hintStyle;
   final String? errorText;
-
+  final int? maxLines;
   const CustomTextField({
     super.key,
     required this.controller,
@@ -44,7 +44,7 @@ class CustomTextField extends StatelessWidget {
     this.contentPadding,
     this.textStyle,
     this.hintStyle,
-    this.errorText,
+    this.errorText, this.maxLines,
   });
 
   @override
@@ -67,6 +67,7 @@ class CustomTextField extends StatelessWidget {
                   controller: controller,
                   style: TextStyleClass.buttonRegular(),
                   keyboardType: keyboardType,
+                  maxLines: maxLines ?? 1,
                   inputFormatters: inputFormatters,
                   maxLength: maxLength,
                   obscureText: obscureText,
