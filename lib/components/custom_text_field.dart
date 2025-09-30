@@ -1,0 +1,86 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:videohub/constants/color_class.dart';
+import 'package:videohub/constants/textstyle_class.dart';
+
+class CustomTextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final TextInputType keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
+  final int? maxLength;
+  final bool obscureText;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final String? Function(String?)? validator;
+  final void Function(String)? onChanged;
+  final void Function()? onTap;
+  final bool readOnly;
+  final Color? backgroundColor;
+  final Color? borderColor;
+  final double borderRadius;
+  final EdgeInsetsGeometry? contentPadding;
+  final TextStyle? textStyle;
+  final TextStyle? hintStyle;
+
+  const CustomTextField({
+    super.key,
+    required this.controller,
+    required this.hintText,
+    this.keyboardType = TextInputType.text,
+    this.inputFormatters,
+    this.maxLength,
+    this.obscureText = false,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.validator,
+    this.onChanged,
+    this.onTap,
+    this.readOnly = false,
+    this.backgroundColor,
+    this.borderColor,
+    this.borderRadius = 12.0,
+    this.contentPadding,
+    this.textStyle,
+    this.hintStyle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        // color: backgroundColor ?? Colors.grey.shade900,
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: Border.all(
+          color: ColorClass.primaryColor.withValues(alpha: 0.4),
+          width: 1,
+        ),
+      ),
+      child: TextField(
+        controller: controller,
+        style: TextStyleClass.buttonRegular(),
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
+        maxLength: maxLength,
+        obscureText: obscureText,
+        // readOnly: readOnly,
+        onChanged: onChanged,
+        onTap: onTap,
+        decoration: InputDecoration(
+          hintText: hintText,
+          contentPadding:
+              contentPadding ??
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
+
+          hintStyle: TextStyleClass.hintText(),
+          border: InputBorder.none,
+          isDense: true,
+          // isCollapsed: true,
+          prefixIcon: prefixIcon,
+          suffixIcon: suffixIcon,
+          counterText: '', // Hide character counter
+        ),
+      ),
+    );
+  }
+}
